@@ -1,0 +1,31 @@
+import boto3
+import json
+
+def get_aws_instance_metadata():
+    ec2_client = boto3.client('ec2', region_name='your_region')  # Replace 'your_region' with the region of your instance.
+
+    instance_id = 'your_instance_id'  # Replace 'your_instance_id' with the ID of your instance.
+
+    response = ec2_client.describe_instances(InstanceIds=[instance_id])
+    instance_metadata = response['Reservations'][0]['Instances'][0]
+
+    return instance_metadata
+
+if __name__ == '__main__':
+    aws_instance_metadata = get_aws_instance_metadata()
+
+    # Access specific data keys individually
+    instance_id = aws_instance_metadata['InstanceId']
+    instance_type = aws_instance_metadata['InstanceType']
+    public_ip = aws_instance_metadata['PublicIpAddress']
+
+    # Create a dictionary containing the desired keys
+    desired_data = {
+        'InstanceId': instance_id,
+        'InstanceType': instance_type,
+        'PublicIpAddress': public_ip
+    }
+
+    json_output = json.dumps(desired_data, indent=2)
+    print(json_output)
+
